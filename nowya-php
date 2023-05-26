@@ -1,0 +1,37 @@
+#!/bin/bash
+
+#Instalando dependencias
+echo "Instando Dependencias"
+apt install libxml2-dev libsqlite3-dev -y
+
+#Descarga la ultima version de php
+echo "Descargando php"
+
+url="https://www.php.net"
+wget $url"$(curl -s $url/downloads.php | grep -oP '"([^"]*\.tar\.gz)"[^>]*' | sed 's/"//g' | head -n 1)"
+
+
+#Descomprime
+echo "Descomprimiendo"
+tar -xf php*.tar.gz
+rm -rf php*.tar.gz
+cd php*/
+
+#Configura
+echo "Configurando"
+./configure
+
+#Compila
+echo "Compilando PHP"
+make
+
+#Pruebas Unitarias
+echo "Haciendo Pruebas Unitarias"
+make test
+
+#Instalando
+echo "Instalando PHP"
+make install
+
+echo "Version Instalada"
+php -v
