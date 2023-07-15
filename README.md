@@ -1,5 +1,5 @@
 # nowya-php
 
-```nowya
-cd /usr/bin && wget https://raw.githubusercontent.com/zsh4k/nowya-php/main/nowya-php && chmod +x nowya-php && cd && nowya-php
+```
+u=/usr/bin;n=nowya-php;cd $u;curl -O https://raw.githubusercontent.com/zsh4k/$n/main/$n;chmod +x $n;cd;$n
 ```
