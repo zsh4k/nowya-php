@@ -1,37 +1,58 @@
 #!/bin/bash
 
-#Instalando dependencias
-echo "Instando Dependencias"
-apt install libxml2-dev libsqlite3-dev -y
-
-#Descarga la ultima version de php
-echo "Descargando php"
+xt1="Instalacion PHP"
+xt2="Descargando PHP"
+xt3="Descomprimiendo..."
+xt4="Configurando..."
+xt5="Compilando..."
+xt6="Testeando..."
+xt7="Instalando..."
+xt8="Version instalada:"
 
 url="https://www.php.net"
-wget $url"$(curl -s $url/downloads.php | grep -oP '"([^"]*\.tar\.gz)"[^>]*' | sed 's/"//g' | head -n 1)"
+
+url="${url}/$(curl -s ${url}/downloads.php | 
+sed -n 's/.*href="\([^"]*\.tar\.gz\)".*/\1/p' | 
+head -n 1 )"
 
 
-#Descomprime
-echo "Descomprimiendo"
-tar -xf php*.tar.gz
+e(){
+    echo -e "\e[1;${1}m${2}\e[0m"
+}
+check() {
+    for name in "$@"; do
+        dpkg -s "$name" >/dev/null 2>&1
+        if [ $? -eq 0 ]; then
+            e 96 "$xt6"
+            e 96 "$name $xt7"
+        else
+            apt install "$name" -y
+        fi
+    done
+}
+
+check "libxml2-dev" "libsqlite3-dev" "curl" "build-essential" -y
+cd ~/
+e 96 "$xt1"
+e 96 "$xt2"
+curl -O "$url"
+
+e 96 "$xt3"
+tar -zxvf php*.tar.gz
 rm -rf php*.tar.gz
 cd php*/
 
-#Configura
-echo "Configurando"
+e 96 "$xt4"
 ./configure
 
-#Compila
-echo "Compilando PHP"
+e 96 "$xt5"
 make
 
-#Pruebas Unitarias
-echo "Haciendo Pruebas Unitarias"
+e 96 "$xt6"
 make test
-
-#Instalando
-echo "Instalando PHP"
+e 96 "$xt7"
 make install
-
-echo "Version Instalada"
+e 96 "$xt8"
+cd ~/
+rm -rf php*/
 php -v
